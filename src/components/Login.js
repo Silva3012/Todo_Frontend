@@ -3,6 +3,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,8 +14,6 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // React tostify
 import { toast } from 'react-toastify';
-
-
 
 function Copyright(props) {
   return (
@@ -30,47 +30,47 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function Register() {
-
-  // Function to handle submit and send POST request to the server
+export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    
+
     const payload = {
         email: data.get('email'),
         password: data.get('password'),
     };
-    
+
     try {
-      // Send a POST request to the server
-      const response = await fetch('/users/register', {
+        // Send a POST request to the server to authenticate the user
+        const response = await fetch('/users/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-    });
+        });
 
-    // Parse the response data as JSON
-    const responseData = await response.json();
+        // Parse the response data as JSON
+        const responseData = await response.json();
 
-    if (response.ok) {
-      // Registration successful
-      // Display success message to the user
-      toast.success(responseData.message);
-      window.location.href = '/login';
-    } else {
-      // Registration failed
-      // Display error message to the user
-      toast.error(responseData.message);
-    }
+        if (response.ok) {
+        // Authentication successful
+        // Store the authentication token in local storage or session storage
+        localStorage.setItem('token', responseData.token);
+
+        // Redirect the user to the authenticated area or perform any other desired actions
+        // For example:
+        window.location.href = '/dashboard';
+        } else {
+        // Authentication failed
+        // Display error message to the user
+        toast.error(responseData.message);
+        }
     } catch (error) {
         // Handle any network or server errors here
         console.error('An error occurred:', error.message);
     }
-    
-  };
+    };
 
   return (
     <ThemeProvider theme={theme}>
@@ -88,62 +88,57 @@ export default function Register() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Register
+            Login
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-              </Grid>
-            </Grid>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Register
+              Login
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
               <Grid item>
-                <Link href="/login" variant="body2">
-                  Already have an account? Login
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Register"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
 }
-
-/*
-References: 
-Sign Up Template
-https://mui.com/material-ui/getting-started/templates/
-
-React-Toastify
-https://www.npmjs.com/package/react-toastify
-*/
