@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Button, TextField, Box, Typography, Link } from '@mui/material';
+import { Button, TextField, Box, Typography, Link, Container } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 // Component for editing a task
@@ -10,6 +10,7 @@ export default function EditTask() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
+  // Fetching the current task data
   const fetchTask = async () => {
     try {
       const response = await fetch(`/tasks/${id}`, {
@@ -35,7 +36,7 @@ export default function EditTask() {
     fetchTask();
   }, []);
 
-  
+
   const onCancel = () => {
     // Navigate back to the dashboard
     window.location.href = '/dashboard';
@@ -47,6 +48,7 @@ export default function EditTask() {
     setDescription(updatedTask.description);
   };
 
+  // Update the task on the backend
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,14 +74,16 @@ export default function EditTask() {
     }
   };
 
+  // Loaing message while waiting for the server to respond
   if (!task) {
     return <div>Loading...</div>;
   }
 
-  
-
   return (
-    <Box>
+    <Box sx={{ width: 1000, px: 4 }}>
+        <Typography variant="h5" component="h1" align="center">
+            Edit Task 🙂
+        </Typography>
       <form onSubmit={handleFormSubmit}>
         <TextField
           label="Title"
@@ -115,5 +119,6 @@ export default function EditTask() {
         {'.'}
       </Typography>
     </Box>
+    
   );
 }

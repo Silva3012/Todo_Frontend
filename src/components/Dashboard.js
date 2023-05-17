@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Just copyright footer for fun :)
   function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -22,7 +23,7 @@ export default function Dashboard() {
   );
   }
 
-
+  // Fetch all the tasks for the user
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -50,14 +51,27 @@ export default function Dashboard() {
     fetchTasks();
   }, []);
 
-  function handleDeleteTask(taskId) {
-    // Handle the delete task functionality
-    console.log('Delete task:', taskId);
-  }
+  async function handleDeleteTask(taskId) {
+  // Implementing the delete task functionality
+  try { 
+    const response = await fetch(`/tasks/${taskId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
 
-  function handleMarkComplete(taskId) {
-    // Handle the mark as complete functionality
-    console.log('Mark as complete:', taskId);
+    if (response.ok) {
+      // Remove the deleted task from the task list
+      setTasks(tasks.filter((task) => task._id !== taskId));
+      toast.success('Task deleted successfully');
+    } else {
+      toast.error(`Failed to delete task: ${response.statusText}`);
+    }
+    } catch (error) {
+      toast.error('An error occurred while deleting the task:', error);
+    } 
   }
 
   return (
@@ -91,7 +105,6 @@ export default function Dashboard() {
                 <Button>Edit</Button>
               </Link>
               <Button onClick={() => handleDeleteTask(task._id)}>Delete</Button>
-              <Button onClick={() => handleMarkComplete(task._id)}>Mark as Complete</Button>
             </Paper>
             ))
         )}

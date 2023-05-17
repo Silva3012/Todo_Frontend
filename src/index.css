@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body {
+  background: linear-gradient(215deg,#90caf9,#e3f2fd,#42a5f5);
+  background-size: 180% 180%;
+  animation: gradient-animation 24s ease infinite;
+  background-repeat: cover;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
